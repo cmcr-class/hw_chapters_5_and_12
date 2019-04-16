@@ -255,199 +255,114 @@ ggplot(flights, aes(air_time - airtime2)) + geom_histogram()
 
 ### Exercises
 
-1.  In code that doesn't use stringr, you'll often see `paste()` and `paste0()`.
-    What's the difference between the two functions? What stringr function are
-    they equivalent to? How do the functions differ in their handling of 
-    `NA`?
+1.  Using prose, describe how the variables and observations are organised in
+    each of the sample tables.
+
+1.  Compute the `rate` for `table2`, and `table4a` + `table4b`. 
+    You will need to perform four operations:
+
+    1.  Extract the number of TB cases per country per year.
+    1.  Extract the matching population per country per year.
+    1.  Divide cases by population, and multiply by 10000.
+    1.  Store back in the appropriate place.
     
-1.  In your own words, describe the difference between the `sep` and `collapse`
-    arguments to `str_c()`.
+    Which representation is easiest to work with? Which is hardest? Why?
 
-1.  Use `str_length()` and `str_sub()` to extract the middle character from 
-    a string. What will you do if the string has an even number of characters?
-
-1.  What does `str_wrap()` do? When might you want to use it?
-
-
-#### Exercises
-
-1.  Explain why each of these strings don't match a `\`: `"\"`, `"\\"`, `"\\\"`.
-
-1.  How would you match the sequence `"'\`?
-
-1.  What patterns will the regular expression `\..\..\..` match? 
-    How would you represent it as a string?
-
-#### Exercises
-
-1.  How would you match the literal string `"$^$"`?
-
-1.  Given the corpus of common words in `stringr::words`, create regular
-    expressions that find all words that:
-    
-    1. Start with "y".
-    1. End with "x"
-    1. Are exactly three letters long. (Don't cheat by using `str_length()`!)
-    1. Have seven letters or more.
-
-    Since this list is long, you might want to use the `match` argument to
-    `str_view()` to show only the matching or non-matching words.
-
-#### Exercises
-
-1.  Create regular expressions to find all words that:
-
-    1. Start with a vowel.
-
-    1. That only contain consonants. (Hint: thinking about matching 
-       "not"-vowels.)
-
-    1. End with `ed`, but not with `eed`.
-    
-    1. End with `ing` or `ise`.
-    
-1.  Empirically verify the rule "i before e except after c".
-
-1.  Is "q" always followed by a "u"?
-
-1.  Write a regular expression that matches a word if it's probably written
-    in British English, not American English.
-
-#### Exercises
-
-1.  Describe the equivalents of `?`, `+`, `*` in `{m,n}` form.
-
-1.  Describe in words what these regular expressions match:
-    (read carefully to see if I'm using a regular expression or a string
-    that defines a regular expression.)
-
-    1. `^.*$`
-    1. `"\\{.+\\}"`
-    1. `\d{4}-\d{2}-\d{2}`
-    1. `"\\\\{4}"`
-
-1.  Create regular expressions to find all words that:
-
-    1. Start with three consonants.
-    1. Have three or more vowels in a row.
-    1. Have two or more vowel-consonant pairs in a row.
-
-1.  Solve the beginner regexp crosswords at
-    <https://regexcrossword.com/challenges/beginner>.
-
-#### Exercises
-
-1.  Describe, in words, what these expressions will match:
-
-    1. `(.)\1\1`
-    1. `"(.)(.)\\2\\1"`
-    1. `(..)\1`
-    1. `"(.).\\1.\\1"`
-    1. `"(.)(.)(.).*\\3\\2\\1"`
-
-1.  Construct regular expressions to match words that:
-
-    1. Start and end with the same character.
-    
-    1. Contain a repeated pair of letters
-       (e.g. "church" contains "ch" repeated twice.)
-    
-    1. Contain one letter repeated in at least three places
-       (e.g. "eleven" contains three "e"s.)
+1.  Recreate the plot showing change in cases over time using `table2`
+    instead of `table1`. What do you need to do first?
 
 ### Exercises
 
-1.  For each of the following challenges, try solving it by using both a single
-    regular expression, and a combination of multiple `str_detect()` calls.
+1.  Why are `gather()` and `spread()` not perfectly symmetrical?  
+    Carefully consider the following example:
     
-    1.  Find all words that start or end with `x`.
+    ```{r, eval = FALSE}
+    stocks <- data_frame(
+      year   = c(2015, 2015, 2016, 2016),
+      half  = c(   1,    2,     1,    2),
+      return = c(1.88, 0.59, 0.92, 0.17)
+    )
+    stocks %>% 
+      spread(year, return) %>% 
+      gather("year", "return", `2015`:`2016`)
+    ```
     
-    1.  Find all words that start with a vowel and end with a consonant.
+    (Hint: look at the variable types and think about column _names_.)
     
-    1.  Are there any words that contain at least one of each different
-        vowel?
+    Both `spread()` and `gather()` have a `convert` argument. What does it 
+    do?
 
-1.  What word has the highest number of vowels? What word has the highest
-    proportion of vowels? (Hint: what is the denominator?)
+1.  Why does this code fail?
 
-#### Exercises
+    ```{r, error = TRUE}
+    table4a %>% 
+      gather(1999, 2000, key = "year", value = "cases")
+    ```
 
-1.  In the previous example, you might have noticed that the regular
-    expression matched "flickered", which is not a colour. Modify the 
-    regex to fix the problem.
+1.  Why does spreading this tibble fail? How could you add a new column to fix
+    the problem?
 
-1.  From the Harvard sentences data, extract:
+    ```{r}
+    people <- frame_data(
+      ~name,             ~key,    ~value,
+      #-----------------|--------|------
+      "Phillip Woods",   "age",       45,
+      "Phillip Woods",   "height",   186,
+      "Phillip Woods",   "age",       50,
+      "Jessica Cordero", "age",       37,
+      "Jessica Cordero", "height",   156
+    )
+    ```
 
-    1. The first word from each sentence.
-    1. All words ending in `ing`.
-    1. All plurals.
+1.  Tidy the simple tibble below. Do you need to spread or gather it?
+    What are the variables?
 
-#### Exercises
-
-1. Find all words that come after a "number" like "one", "two", "three" etc.
-   Pull out both the number and the word.
-
-1. Find all contractions. Separate out the pieces before and after the 
-   apostrophe.
-
-#### Exercises
-
-1.   Replace all forward slashes in a string with backslashes.
-
-1.   Implement a simple version of `str_to_lower()` using `replace_all()`.
-
-1.   Switch the first and last letters in `words`. Which of those strings
-     are still words?
-
-#### Exercises
-
-1.  Split up a string like `"apples, pears, and bananas"` into individual
-    components.
-    
-1.  Why is it better to split up by `boundary("word")` than `" "`?
-
-1.  What does splitting with an empty string (`""`) do? Experiment, and
-    then read the documentation.
+    ```{r}
+    preg <- frame_data(
+      ~pregnant, ~male, ~female,
+      "yes",     NA,    10,
+      "no",      20,    12
+    )
+    ```
 
 ### Exercises
 
-1.  How would you find all strings containing `\` with `regex()` vs.
-    with `fixed()`?
-
-1.  What are the five most common words in `sentences`?
-
-### Exercises
-
-1.  Find the stringi functions that:
-
-    1. Count the number of words.
-    1. Find duplicated strings.
-    1. Generate random text.
-
-1.  How do you control the language that `stri_sort()` uses for 
-    sorting?
+1.  What do the `extra` and `fill` arguments do in `separate()`? 
+    Experiment with the various options for the following two toy datasets.
     
+    ```{r, eval = FALSE}
+    tibble::tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+      separate(x, c("one", "two", "three"))
+    
+    tibble::tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+      separate(x, c("one", "two", "three"))
+    ```
+
+1.  Both `unite()` and `separate()` have a `remove` argument. What does it
+    do? Why would you set it to `FALSE`?
+
+1.  Compare and contrast `separate()` and `extract()`.  Why are there
+    three variations of separation, but only one unite?
+
 ### Exercises
 
-1.  There are some suspiciously high numbers in `tvhours`. Is the mean a good
-    summary?
+1.  Compare and contrast the `fill` arguments to `spread()` and `complete()`. 
 
-1.  For each factor in `gss_cat` identify whether the order of the levels is
-    arbitrary or principled.
-
-1.  Why did moving "Not applicable" to the front of the levels move it to the
-    bottom of the plot?
-
-1.  Recreate the display of marital status by age, using `geom_area()` instead
-    of `geom_line()`. What do you need to change to the plot? How might you
-    tweak the levels?
+1.  What does the direction argument to `fill()` do?
 
 ### Exercises
 
-1.  How have the proportions of people identifying as Democrat, Republican, and
-    Independent changed over time?
+1.  In this case study I set `na.rm = TRUE` just to make it easier to
+    check that we had the correct values. Is this reasonable? Think about
+    how missing values are represented in this dataset. Are there implicit
+    missing values? What's the difference between an `NA` and zero? 
 
-1.  Display the joint distribution of the  `relig` and `denom` variables in
-    a single plot.
+1.  What happens if you neglect the `mutate()` step?
 
-1.  How could you collapse `rincome` into a small set of categories?
+1.  I claimed that `iso2` and `iso3` were redundant with `country`. 
+    Confirm my claim by creating a table that uniquely maps from `country`
+    to `iso2` and `iso3`.
+
+1.  For each country, year, and sex compute the total number of cases of 
+    TB. Make an informative visualisation of the data.
+
